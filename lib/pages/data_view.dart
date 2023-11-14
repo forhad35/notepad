@@ -1,13 +1,14 @@
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../core/database.dart';
 class ViewUpdate extends StatefulWidget {
- final String? title , desc;
+ final String? title , desc,createDate,modifyDate;
  final int? id;
   const ViewUpdate({super.key,
      this.desc,
      this.title,
-     this.id
+     this.id, this.createDate, this.modifyDate
   });
 
   @override
@@ -17,6 +18,7 @@ class ViewUpdate extends StatefulWidget {
 class _ViewUpdateState extends State<ViewUpdate> {
   final _title = TextEditingController();
   final _details = TextEditingController();
+   bool isModifyDate = false,isCreateDate = false;
   @override
   void initState() {
     super.initState();
@@ -26,6 +28,12 @@ class _ViewUpdateState extends State<ViewUpdate> {
       }
       if(widget.desc!.isNotEmpty){
         _details.text= widget.desc!;
+      }
+      if(widget.modifyDate != null && widget.modifyDate!.isNotEmpty ){
+        isModifyDate = true;
+      }
+      if(widget.createDate != null &&widget.createDate!.isNotEmpty){
+        isCreateDate = true;
       }
     }
   }
@@ -38,33 +46,56 @@ class _ViewUpdateState extends State<ViewUpdate> {
 
     return Scaffold(
       appBar: AppBar(title: const Text("Notes"),
-        leading: IconButton(onPressed: ()=>Navigator.pop(context),icon: const Icon(Icons.arrow_back_ios,color: Colors.lightBlue,),),
+        leading: IconButton(onPressed: ()=>Navigator.pop(context),icon: const Icon(Icons.arrow_back,color: Colors.lightBlue,size: 25,),),
         actions: isHas?[
           IconButton(onPressed: (){
-            Map<String,dynamic> data ={
-              'name': _title.text,
-              'description': _details.text
-            };
 
             if(widget.id != null){
-
+            String  modifyDate  = DateFormat.yMMMd().add_jm().format(DateTime.now());
+              Map<String,dynamic> data ={
+                'name': _title.text,
+                'description': _details.text,
+                'modifyDate' : modifyDate
+              };
               DBHelper.updateData(table, data,widget.id!);
+
+
             }else{
+            String  createDate = DateFormat.yMMMd().add_jm().format(DateTime.now());
+              Map<String,dynamic> data ={
+                'name': _title.text,
+                'description': _details.text,
+                'createDate': createDate,
+              };
               DBHelper.insertData(table, data);
+
             }
+
             FocusManager.instance.primaryFocus?.unfocus();
             isHas = false;
             setState(() {
 
             });
 
-          }, icon: const Icon(Icons.done,color: Colors.lightBlue,))]:null,),
+          }, icon: const Icon(Icons.done,color: Colors.lightBlue,size: 35,))]:[
+            IconButton(onPressed: (){}, icon:const Icon(Icons.share,color: Colors.lightBlue,size: 25,) ),
+            IconButton(onPressed: (){}, icon:const Icon(Icons.menu,color: Colors.lightBlue,size: 25,) ),
+
+        ],),
 
       body: Container(
         padding: const EdgeInsets.all(10),
         child: SingleChildScrollView(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Container(
+                child:isCreateDate? Text("Create Date : ${widget.createDate}",style: const TextStyle(fontSize: 10),):null,
+              ),
+              Container(
+                margin: const EdgeInsets.only(top: 5),
+                child: isModifyDate ? Text("Last modify : ${widget.modifyDate}",style: const TextStyle(fontSize: 10),):null,
+              ),
               TextFormField(
                 controller: _title,
                 onChanged: (value){

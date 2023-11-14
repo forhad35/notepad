@@ -42,7 +42,7 @@ class _HomePageState extends State<HomePage> {
               elevation: 0,
               child: InkWell(
                 onTap: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=>ViewUpdate(desc: data[index]['description'], title: data[index]['name'],id: data[index]['id'],)));
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>ViewUpdate(desc: data[index]['description'], title: data[index]['name'],id: data[index]['id'],createDate: data[index]['createDate'],modifyDate: data[index]['modifyDate'],)));
                 },
                 child: ListTile(
                   title: data[index]['name']!=""? Text('${data[index]['name']}',overflow: TextOverflow.ellipsis,):null,
@@ -51,8 +51,17 @@ class _HomePageState extends State<HomePage> {
                     setState(() {
                       fetchData();
                     });
-                  },icon: const Icon(Icons.delete),),
-                  subtitle:data[index]['description']!=""? Text('${data[index]['description']}',overflow: TextOverflow.ellipsis,):null,
+                  },icon: const Icon(Icons.delete,color: Colors.blue,),),
+                  subtitle:Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        child:data[index]['description']!=""? Text('${data[index]['description']}',overflow: TextOverflow.ellipsis,style: const TextStyle(fontSize: 14),):null,
+                      ),
+                      Text("${data[index]['createDate']}",style: const TextStyle(fontSize: 10),),
+                    ],
+                  ),
+
                   // leading: Text(' ${data[index]['id']} '),
                 ),
               ),

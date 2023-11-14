@@ -28,7 +28,9 @@ class DBHelper {
           CREATE TABLE $table (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT,
-            description TEXT
+            description TEXT,
+            createDate TEXT,
+            modifyDate TEXT
           )
         ''');
       },
