@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-
 import '../core/database.dart';
-import 'dataView.dart';
+import 'data_view.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -32,45 +31,42 @@ class _HomePageState extends State<HomePage> {
     });
     return Scaffold(
       appBar: AppBar(
-        title: Text("Notes",),
+        title: const Text("Notes",),
       ),
-      body: Container(
-        color: Colors.white,
-        child: ListView.builder(
-          padding: EdgeInsets.only(left: 10,right: 10),
+      body: ListView.builder(
+          padding: const EdgeInsets.only(left: 10,right: 10),
           itemCount: data.length,
           itemBuilder: (context, index) {
             return Card(
-              color: Color(0xFFF3F3F3),
+              color: const Color(0xFFF3F3F3),
               elevation: 0,
               child: InkWell(
                 onTap: (){
                   Navigator.push(context, MaterialPageRoute(builder: (context)=>ViewUpdate(desc: data[index]['description'], title: data[index]['name'],id: data[index]['id'],)));
                 },
                 child: ListTile(
-                  title: data[index]['name']!=""? Text('${data[index]['name']}'):null,
+                  title: data[index]['name']!=""? Text('${data[index]['name']}',overflow: TextOverflow.ellipsis,):null,
                   trailing: IconButton(onPressed: (){
                     DBHelper.deleteData(table, data[index]['id']);
                     setState(() {
                       fetchData();
                     });
-                  },icon: Icon(Icons.delete),),
-                  subtitle:data[index]['description']!=""? Text('${data[index]['description']}'):null,
+                  },icon: const Icon(Icons.delete),),
+                  subtitle:data[index]['description']!=""? Text('${data[index]['description']}',overflow: TextOverflow.ellipsis,):null,
                   // leading: Text(' ${data[index]['id']} '),
                 ),
               ),
             );
           },
         ),
-      ),
-      floatingActionButton: FloatingActionButton.large(onPressed: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context)=>ViewUpdate()));
+      floatingActionButton: FloatingActionButton(onPressed: () {
+        Navigator.push(context, MaterialPageRoute(builder: (context)=>const ViewUpdate()));
       },
         backgroundColor:Colors.lightBlue,
-        child: Icon(Icons.add,color: Colors.white,),
-        shape: BeveledRectangleBorder(
+        shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(50)
         ),
+        child: const Icon(Icons.add,color: Colors.white,),
 
       ),
     );
