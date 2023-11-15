@@ -38,6 +38,8 @@ dependencies:
   path: ^1.8.3
   sqflite: ^2.3.0
   intl: ^0.18.1
+  font_awesome_flutter: ^10.6.0
+
 
 dev_dependencies:
   flutter_test:

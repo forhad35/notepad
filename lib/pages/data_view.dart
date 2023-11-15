@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import '../core/database.dart';
 class ViewUpdate extends StatefulWidget {
@@ -79,7 +80,7 @@ class _ViewUpdateState extends State<ViewUpdate> {
 
           }, icon: const Icon(Icons.done,color: Colors.lightBlue,size: 35,))]:[
             IconButton(onPressed: (){}, icon:const Icon(Icons.share,color: Colors.lightBlue,size: 25,) ),
-            IconButton(onPressed: (){}, icon:const Icon(Icons.menu,color: Colors.lightBlue,size: 25,) ),
+            IconButton(onPressed: (){}, icon:const Icon(FontAwesomeIcons.ellipsisVertical,color: Colors.lightBlue,size: 25,) ),
 
         ],),
 
@@ -119,6 +120,16 @@ class _ViewUpdateState extends State<ViewUpdate> {
 
                   });
                 },
+                // onEditingComplete: (){
+                //   print('hello');
+                //   // ScaffoldMessenger.of(context).showSnackBar(snakbar("text"));
+                //
+                //
+                // },
+                // onSaved: (v){
+                //   print("cdsf $v ");
+                // },
+                textInputAction: TextInputAction.unspecified,
                 minLines: 1,
                 maxLines: 5,
                 // maxLength: 300,
@@ -161,4 +172,5 @@ class _ViewUpdateState extends State<ViewUpdate> {
 
     );
   }
+  SnackBar snakbar(String text)=> SnackBar(content: Text("$text"));
 }
