@@ -30,7 +30,8 @@ class DBHelper {
             name TEXT,
             description TEXT,
             createDate TEXT,
-            modifyDate TEXT
+            modifyDate TEXT,
+            flag INTEGER
           )
         ''');
       },
@@ -64,14 +65,8 @@ class DBHelper {
     final Database db = await database;
     return await db.delete(table);
   }
-
-  static Future<int> deleteData(String table, int id) async {
+  static Future deleteData(String table,  id) async {
     final Database db = await database;
-    // Delete the data from the table
-    return await db.delete(
-      table,
-      where: 'id = ?',
-      whereArgs: [id], // assuming 'id' is the primary key
-    );
+    return await db.rawDelete("DELETE FROM $table WHERE id IN ($id)");
   }
 }

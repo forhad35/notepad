@@ -39,6 +39,7 @@ dependencies:
   sqflite: ^2.3.0
   intl: ^0.18.1
   font_awesome_flutter: ^10.6.0
+  tuple: ^2.0.2
 
 
 dev_dependencies:
