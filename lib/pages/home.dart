@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:note_pads/helper_widget/image_convater.dart';
 import 'package:note_pads/pages/data_delete.dart';
 import '../core/database.dart';
 import 'data_view.dart';
@@ -55,11 +56,6 @@ class _HomePageState extends State<HomePage> {
                 child: ListTile(
                   title:Container(child:  data[index]['name']!=""? Text('${data[index]['name']}',overflow: TextOverflow.ellipsis,):null,),
 
-
-                    // DBHelper.deleteData(table, data[index]['id']);
-                    // setState(() {
-                    //   fetchData();
-                    // });
                   subtitle:Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -78,6 +74,7 @@ class _HomePageState extends State<HomePage> {
         ),
       floatingActionButton: FloatingActionButton(onPressed: () {
         Navigator.push(context, MaterialPageRoute(builder: (context)=>const ViewUpdate()));
+
       },
         backgroundColor:Colors.lightBlue,
         shape: RoundedRectangleBorder(

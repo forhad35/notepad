@@ -2,7 +2,10 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:note_pads/helper_widget/back_icon_widget.dart';
+import 'package:note_pads/pages/share_page.dart';
 import '../core/database.dart';
+import 'home.dart';
 class ViewUpdate extends StatefulWidget {
  final String? title , desc,createDate,modifyDate;
  final int? id;
@@ -38,29 +41,31 @@ class _ViewUpdateState extends State<ViewUpdate> {
       }
     }
   }
+  updateData(){
+    if(isHas){
+      String  modifyDate  = DateFormat.yMMMd().add_jm().format(DateTime.now());
+      Map<String,dynamic> data ={
+        'name': _title.text,
+        'description': _details.text,
+        'modifyDate' : modifyDate
+      };
+      DBHelper.updateData(table, data,widget.id!);
+    }
+  }
   bool titleIsReadOnly = true;
   bool detailsIsReadOnly = true;
   bool isHas= false;
-
   @override
   Widget build(BuildContext context) {
 
     return Scaffold(
       appBar: AppBar(title: const Text("Notes"),
-        leading: IconButton(onPressed: ()=>Navigator.pop(context),icon: const Icon(Icons.arrow_back,color: Colors.lightBlue,size: 25,),),
+        leading: backIcon(context),
         actions: isHas?[
           IconButton(onPressed: (){
 
             if(widget.id != null){
-            String  modifyDate  = DateFormat.yMMMd().add_jm().format(DateTime.now());
-              Map<String,dynamic> data ={
-                'name': _title.text,
-                'description': _details.text,
-                'modifyDate' : modifyDate
-              };
-              DBHelper.updateData(table, data,widget.id!);
-
-
+            updateData();
             }else{
             String  createDate = DateFormat.yMMMd().add_jm().format(DateTime.now());
               Map<String,dynamic> data ={
@@ -72,18 +77,55 @@ class _ViewUpdateState extends State<ViewUpdate> {
               DBHelper.insertData(table, data);
 
             }
-
             FocusManager.instance.primaryFocus?.unfocus();
             isHas = false;
             setState(() {
 
             });
 
-          }, icon: const Icon(Icons.done,color: Colors.lightBlue,size: 35,))]:[
-            IconButton(onPressed: (){}, icon:const Icon(Icons.share,color: Colors.lightBlue,size: 25,) ),
-            IconButton(onPressed: (){}, icon:const Icon(FontAwesomeIcons.ellipsisVertical,color: Colors.lightBlue,size: 25,) ),
+          }, icon: const Icon(Icons.done,color: Colors.lightBlue,size: 35,))]: widget.id !=null?[
+            IconButton(onPressed: (){Navigator.push(context,MaterialPageRoute(builder: (context)=> SharePage(title: _title.text,details: _details.text,)));}, icon:const Icon(Icons.share,color: Colors.lightBlue,size: 25,) ),
+            // IconButton(onPressed: (){}, icon:const Icon(FontAwesomeIcons.ellipsisVertical,color: Colors.lightBlue,size: 25,) ),
+          PopupMenuButton(
+            icon: const Icon(FontAwesomeIcons.ellipsisVertical,color: Colors.lightBlue,size: 25,),
+            color:Colors.white,
+            itemBuilder: (BuildContext context) {
+              return[
+                PopupMenuItem(
+                  onTap:() {
+                    showDialog(context: context, builder: (context,)=> AlertDialog(
+                      title: const Text("Delete the notes?"),
+                      content: const Text("Are you sure to delete the a note"),
+                      actions: [
+                        TextButton(onPressed: (){
+                          Navigator.pop(context);
+                        }, child:const Text("Cancel")),
+                        TextButton(onPressed: (){
+                          var itemIDs = widget.id.toString();
+                          DBHelper.deleteData(table, itemIDs);
+                          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>const HomePage()), (route) => false);
+                        }, child:const Text("Delete")),
+                      ],
+                    ));
 
-        ],),
+                  },
+                  padding: const EdgeInsets.only(left: 50,right: 5),
+                    child: SizedBox(
+                      width:100,
+                      child: Transform.translate(
+                        offset: const Offset(-30,0),
+                        child: const Text("Delete",style: TextStyle(color: Color(0xff444343),fontSize: 16),),
+                      ),
+                    ),
+                ),
+              ];
+            },
+            elevation: 2,
+            offset: const Offset(-30,40),
+            position: PopupMenuPosition.over,
+          ),
+
+        ]:null,),
 
       body: Container(
         padding: const EdgeInsets.all(10),

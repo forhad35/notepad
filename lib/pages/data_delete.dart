@@ -16,6 +16,8 @@ class _DataDeleteState extends State<DataDelete> {
   bool isChecked = false;
   var notesUid =[];
   int selectedItemCounts=0 ;
+  var itemID=StringBuffer();
+
 
   // bool isSelectAll = false;
   var flag =[];
@@ -36,7 +38,6 @@ class _DataDeleteState extends State<DataDelete> {
         }
       }
   }
-  var itemID=StringBuffer();
 
 
   @override
