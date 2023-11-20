@@ -29,6 +29,7 @@ class _SearchDataState extends State<SearchData> {
             height: 40,
             child: TextFormField(
               controller: search,
+              autofocus: true,
               onChanged:(value) async{
                 if(search.text.isNotEmpty) {
                   List<Map<String, dynamic>> result = await DBHelper.searchData(search.text);
