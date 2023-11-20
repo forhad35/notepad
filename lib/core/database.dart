@@ -30,8 +30,7 @@ class DBHelper {
             name TEXT,
             description TEXT,
             createDate TEXT,
-            modifyDate TEXT,
-            flag INTEGER
+            modifyDate TEXT
           )
         ''');
       },
@@ -43,6 +42,12 @@ class DBHelper {
 
     // Insert the data into the table
     await db.insert(table, data, conflictAlgorithm: ConflictAlgorithm.replace);
+  }
+  static Future<List<Map<String, dynamic>>> searchData(String searchString) async {
+    final Database db = await database;
+    return db.rawQuery('''
+    SELECT * FROM $table WHERE name LIKE '%$searchString%' OR description LIKE '%$searchString%'
+    ''');
   }
 
   static Future<List<Map<String, dynamic>>> getData(String table) async {

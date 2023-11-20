@@ -103,7 +103,7 @@ class _DataDeleteState extends State<DataDelete> {
           );
         },
       ),
-      bottomSheet: ElevatedButton(
+      bottomNavigationBar: ElevatedButton(
         onPressed: () {
         for( int i =0; i<flag.length ; i++){
           if( flag[i] == true){

@@ -72,7 +72,6 @@ class _ViewUpdateState extends State<ViewUpdate> {
                 'name': _title.text,
                 'description': _details.text,
                 'createDate': createDate,
-                'flag': 0
               };
               DBHelper.insertData(table, data);
 
