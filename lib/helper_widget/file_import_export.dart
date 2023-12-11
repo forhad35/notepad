@@ -1,46 +1,45 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:path_provider/path_provider.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
-Future directory()async{
+
+exportFile( files)async{
   var status = await Permission.storage.status;
-  if(!status.isGranted){
+  if(status.isDenied){
     await Permission.storage.request();
   }
-  try{
-    final dir = Directory('${(Platform.isAndroid
-        ? await getExternalStorageDirectory() //FOR ANDROID
-        : await getApplicationSupportDirectory() //FOR IOS
-    )!.path}/notes');
-    // var dir = Directory("/storage/emulated/0/com.Notebook.notes/");
-    // var dir = Directory("${dirr.path}/notes");
-    if(await dir.exists()){
-      print("this is true $dir");
-      return dir.path;
-    }else{
-      print("creat :  $dir");
-      await dir.create(recursive: true);
-      return dir;
+  if(status.isGranted){
+    var fileName = "/${files['title'].toString().isNotEmpty?files['title']:"Untitled"}-id-${files['id']}.txt";
+    String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
+    if (selectedDirectory != null) {
+      File file = File("$selectedDirectory$fileName");
+      file.writeAsString(jsonEncode(files));
     }
-  }catch(e){
-    print("ERror :  $e");
+    print(selectedDirectory);
+    print(files);
+
+  }else{
+    print(" permission denied");
   }
+
 }
-var dir ;
-exportFile(files)async{
-  var filePath = "/${files['title']}${files['id']}.txt";
-  print(files.toString());
- await directory().then((value){
-    dir = "$value$filePath";
-  });
-  File file = await File(dir);
-  file.writeAsString(jsonEncode(files));
-}
-importFile()async{
-  Map<String,dynamic>? read ;
-  var file =await File(dir);
-   await file.readAsString().then((value) {
-   read = jsonDecode(value);
-  });
-  print(read!);
+
+  Future<Map<String,dynamic>?> importFile()async{
+  FilePickerResult? result = await FilePicker.platform.pickFiles(
+  );
+  if(result != null){
+    Map<String,dynamic>? data ;
+    File file = File(result.files.first.path!);
+    await file.readAsString().then((value) {
+      data = jsonDecode(value.toString());
+    });
+    if(data !=null){
+      print(data);
+      return data ;
+    }
+  }else{
+    print("result is null");
+    return null;
+  }
+  return null;
 }

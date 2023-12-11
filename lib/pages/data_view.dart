@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
@@ -26,6 +28,7 @@ class ViewUpdate extends StatefulWidget {
 class _ViewUpdateState extends State<ViewUpdate> {
   final _title = TextEditingController();
   final _details = TextEditingController();
+  var data ;
   bool isModifyDate = false, isCreateDate = false;
 
   @override
@@ -61,19 +64,20 @@ class _ViewUpdateState extends State<ViewUpdate> {
 
   bool titleIsReadOnly = true;
   bool detailsIsReadOnly = true;
-  bool isHas = false;
+  bool isHas = false,isImported = true;
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Notes"),
         leading: backIcon(context),
-        actions: isHas
+        actions: isHas || data !=null
             ? [
                 IconButton(
                     onPressed: () {
-                      if (widget.id != null) {
+                      if (widget.id != null ) {
                         updateData();
                       } else {
                         String createDate =
@@ -87,6 +91,8 @@ class _ViewUpdateState extends State<ViewUpdate> {
                       }
                       FocusManager.instance.primaryFocus?.unfocus();
                       isHas = false;
+                      isImported = false;
+                      data = null;
                       setState(() {});
                     },
                     icon: const Icon(
@@ -125,14 +131,12 @@ class _ViewUpdateState extends State<ViewUpdate> {
                           PopupMenuItem(
                             onTap: () {
                               exportFile({
-                                "id" : widget.id,
-                                "title" : widget.title ?? "Untitled",
+                                "id": widget.id,
+                                "title" : widget.title,
                                 "desc":widget.desc,
                                 "createDate":widget.createDate,
                                 "modifyDate":widget.modifyDate
                               });
-
-
                             },
                             padding: const EdgeInsets.only(left: 50, right: 5),
                             child: SizedBox(
@@ -141,23 +145,6 @@ class _ViewUpdateState extends State<ViewUpdate> {
                                 offset: const Offset(-30, 0),
                                 child: const Text(
                                   "Export",
-                                  style: TextStyle(
-                                      color: Color(0xff444343), fontSize: 16),
-                                ),
-                              ),
-                            ),
-                          ),
-                          PopupMenuItem(
-                            onTap: () {
-                              importFile();
-                            },
-                            padding: const EdgeInsets.only(left: 50, right: 5),
-                            child: SizedBox(
-                              width: 100,
-                              child: Transform.translate(
-                                offset: const Offset(-30, 0),
-                                child: const Text(
-                                  "Import",
                                   style: TextStyle(
                                       color: Color(0xff444343), fontSize: 16),
                                 ),
@@ -220,7 +207,15 @@ class _ViewUpdateState extends State<ViewUpdate> {
                       position: PopupMenuPosition.over,
                     ),
                   ]
-                : null,
+                : isImported?[TextButton(onPressed: ()async{
+                 data = await importFile();
+                 if(data != null){
+                   _title.text = data['title'];
+                   _details.text = data['desc'];
+                 }
+                  // print(widget.title);
+                  setState((){});
+        }, child: Text("Import"))]:null,
       ),
       body: Container(
         padding: const EdgeInsets.all(10),
@@ -231,7 +226,7 @@ class _ViewUpdateState extends State<ViewUpdate> {
               Container(
                 child: isCreateDate
                     ? Text(
-                        "Create Date : ${widget.createDate}",
+                        "Create Date : ${data!=null?data['createDate']:widget.createDate}",
                         style: const TextStyle(fontSize: 10),
                       )
                     : null,
@@ -240,7 +235,7 @@ class _ViewUpdateState extends State<ViewUpdate> {
                 margin: const EdgeInsets.only(top: 5),
                 child: isModifyDate
                     ? Text(
-                        "Last modify : ${widget.modifyDate}",
+                        "Last modify : ${data!=null?data['modifyDate']:widget.modifyDate}",
                         style: const TextStyle(fontSize: 10),
                       )
                     : null,
@@ -267,15 +262,6 @@ class _ViewUpdateState extends State<ViewUpdate> {
                   titleIsReadOnly = false;
                   setState(() {});
                 },
-                // onEditingComplete: (){
-                //   print('hello');
-                //   // ScaffoldMessenger.of(context).showSnackBar(snakbar("text"));
-                //
-                //
-                // },
-                // onSaved: (v){
-                //   print("cdsf $v ");
-                // },
                 textInputAction: TextInputAction.unspecified,
                 minLines: 1,
                 maxLines: 5,
