@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:note_pads/pages/data_delete.dart';
 import 'package:note_pads/pages/search_data.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../core/database.dart';
 import 'data_view.dart';
 
@@ -24,7 +25,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> fetchData() async {
-        List<Map<String, dynamic>> result = await DBHelper.getData(table);
+    List<Map<String, dynamic>> result = await DBHelper.getData(table);
         setState(() {
           data = result;
         });
