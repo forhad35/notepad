@@ -130,7 +130,8 @@ class _ViewUpdateState extends State<ViewUpdate> {
                         return [
                           PopupMenuItem(
                             onTap: () {
-                              exportFile({
+                              exportFile(context,{
+                                "id": widget.id,
                                 "title" : widget.title,
                                 "desc":widget.desc,
                                 "createDate":widget.createDate,
