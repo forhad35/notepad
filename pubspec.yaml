@@ -48,6 +48,9 @@ dependencies:
   permission_handler: ^11.1.0
   file_picker: ^6.1.1
   filesystem_picker: ^4.0.0
+  read_pdf_text: ^0.2.1
+  flutter_file_dialog: ^3.0.2
+  device_info_plus: ^9.1.1
 
 
 dev_dependencies:

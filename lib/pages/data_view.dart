@@ -28,7 +28,7 @@ class ViewUpdate extends StatefulWidget {
 class _ViewUpdateState extends State<ViewUpdate> {
   final _title = TextEditingController();
   final _details = TextEditingController();
-  var data ;
+  var data='';
   bool isModifyDate = false, isCreateDate = false;
 
   @override
@@ -73,7 +73,7 @@ class _ViewUpdateState extends State<ViewUpdate> {
       appBar: AppBar(
         title: const Text("Notes"),
         leading: backIcon(context),
-        actions: isHas || data !=null
+        actions: isHas || data.isNotEmpty
             ? [
                 IconButton(
                     onPressed: () {
@@ -92,7 +92,7 @@ class _ViewUpdateState extends State<ViewUpdate> {
                       FocusManager.instance.primaryFocus?.unfocus();
                       isHas = false;
                       isImported = false;
-                      data = null;
+                      data = '';
                       setState(() {});
                     },
                     icon: const Icon(
@@ -131,11 +131,9 @@ class _ViewUpdateState extends State<ViewUpdate> {
                           PopupMenuItem(
                             onTap: () {
                               exportFile({
-                                "id": widget.id,
                                 "title" : widget.title,
                                 "desc":widget.desc,
                                 "createDate":widget.createDate,
-                                "modifyDate":widget.modifyDate
                               });
                             },
                             padding: const EdgeInsets.only(left: 50, right: 5),
@@ -208,10 +206,9 @@ class _ViewUpdateState extends State<ViewUpdate> {
                     ),
                   ]
                 : isImported?[TextButton(onPressed: ()async{
-                 data = await importFile();
-                 if(data != null){
-                   _title.text = data['title'];
-                   _details.text = data['desc'];
+                 data = (await importFile())!;
+                 if(data.isNotEmpty){
+                   _details.text = data;
                  }
                   // print(widget.title);
                   setState((){});
@@ -226,7 +223,7 @@ class _ViewUpdateState extends State<ViewUpdate> {
               Container(
                 child: isCreateDate
                     ? Text(
-                        "Create Date : ${data!=null?data['createDate']:widget.createDate}",
+                        "Create Date : ${widget.createDate}",
                         style: const TextStyle(fontSize: 10),
                       )
                     : null,
@@ -235,7 +232,7 @@ class _ViewUpdateState extends State<ViewUpdate> {
                 margin: const EdgeInsets.only(top: 5),
                 child: isModifyDate
                     ? Text(
-                        "Last modify : ${data!=null?data['modifyDate']:widget.modifyDate}",
+                        "Last modify : ${widget.modifyDate}",
                         style: const TextStyle(fontSize: 10),
                       )
                     : null,
